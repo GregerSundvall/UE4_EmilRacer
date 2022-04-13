@@ -1,9 +1,8 @@
 ﻿
 
 #include "RaceStartLine.h"
-
 #include "EmilRacer/Game/RaceGameInstance.h"
-#include "GameFramework/GameModeBase.h"
+#include "EmilRacer/Game/RaceGameMode.h"
 #include "Kismet/GameplayStatics.h"
 
 
@@ -34,10 +33,16 @@ void ARaceStartLine::BeginPlay()
 		PlayerController->bAutoManageActiveCameraTarget = false;
 
 		ARaceCar* Car = GetWorld()->SpawnActor<ARaceCar>(CarClass, SpawnTransform);
+		Car->PlayerIndex = i;
 		PlayerController->Possess(Car);
 
 		URaceGameInstance* GameInstance = URaceGameInstance::Get(this);
 		GameInstance->Cars.Add(Car);
+
+		// Add Player status widget
+		ARaceGameMode* GameMode = ARaceGameMode::Get(this);
+		GameMode->OverlayWidget->AddPlayerStatus(i);
+		GameMode->OverlayWidget->StatusWidgets[i]->SetPlayerName(FString::Printf(TEXT("Player %d"), i + 1));
 		
 		SpawnTransform.AddToTranslation(GetActorRightVector() * 500.f);
 	}

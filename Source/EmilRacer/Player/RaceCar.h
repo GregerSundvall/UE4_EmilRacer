@@ -1,12 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
+﻿
 #pragma once
 
 #include "RaceCarMovementComponent.h"
 #include "Components/BoxComponent.h"
 #include "GameFramework/Pawn.h"
 // #include "CoreMinimal.h"
-// #include "UObject/Object.h"
 #include "RaceCar.generated.h"
 
 class URacePowerup;
@@ -32,6 +30,9 @@ public:
 	void EquipPowerup(URacePowerup* NewPowerup);
 	bool HasPowerup() {return Powerup != nullptr;}
 
+	UPROPERTY(BlueprintReadOnly)
+	int PlayerIndex = 0;
+	
 	UPROPERTY(VisibleAnywhere)
 	UBoxComponent* BoxCollision;
 

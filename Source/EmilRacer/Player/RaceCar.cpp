@@ -1,10 +1,10 @@
-﻿// Fill out your copyright notice in the Description page of Project Settings.
-
-
+﻿
 #include "RaceCar.h"
 #include "Components/BoxComponent.h"
 #include "EmilRacer/Game/RaceGameInstance.h"
+#include "EmilRacer/Game/RaceGameMode.h"
 #include "EmilRacer/Powerup/RacePowerup.h"
+#include "EmilRacer/UI/RacePlayerStatusWidget.h"
 
 ARaceCar::ARaceCar()
 {
@@ -23,22 +23,21 @@ void ARaceCar::Tick(float DeltaSeconds)
 
 	if (Powerup != nullptr)
 	{
-		GEngine->AddOnScreenDebugMessage(
-			INDEX_NONE,
-			0.0f,
-			FColor::Emerald,
-			Powerup->GetClass()->GetName(),
-			true,
-			FVector2D(4.f)
-			);
-
+		// GEngine->AddOnScreenDebugMessage(
+		// 	INDEX_NONE,
+		// 	0.0f,
+		// 	FColor::Emerald,
+		// 	Powerup->GetClass()->GetName(),
+		// 	true,
+		// 	FVector2D(4.f)
+		// 	);
 		if (bPowerupActivated)
 		{
 			Powerup->TickActive(DeltaSeconds);
 			if (Powerup->ShouldDeactivate())
 			{
 				bPowerupActivated = false;
-				Powerup = nullptr;
+				EquipPowerup(nullptr);				
 			}
 		}
 	}
@@ -95,6 +94,14 @@ void ARaceCar::HandleTurnRightInput(float Value)
 void ARaceCar::EquipPowerup(URacePowerup* NewPowerup)
 {
 	Powerup = NewPowerup;
-	Powerup->Setup();
+	if (NewPowerup != nullptr)
+	{
+		Powerup->Setup();
+	}
+
+	auto* GameMode = ARaceGameMode::Get(this);
+	auto* StatusWidget = GameMode->OverlayWidget->StatusWidgets[PlayerIndex];
+	StatusWidget->SetEquippedPowerup(NewPowerup);
+	
 }
 
